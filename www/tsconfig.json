@@ -1,10 +1,45 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": "app",
+    "paths": {
+      "@element/*": [
+        "components/elements/*"
+      ],
+      "@layout/*": [
+        "components/layouts/*"
+      ],
+      "@module/*": [
+        "components/modules/*"
+      ],
+      "@template/*": [
+        "components/templates/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ],
+      "@constant/*": [
+        "constants/*"
+      ],
+      "@context/*": [
+        "context/*"
+      ],
+      "@hook/*": [
+        "hooks/*"
+      ],
+      "@helper/*": [
+        "helpers/*"
+      ]
+    },
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "es2017"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -13,6 +48,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
