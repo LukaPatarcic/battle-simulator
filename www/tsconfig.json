@@ -29,6 +29,12 @@
       ],
       "@helper/*": [
         "helpers/*"
+      ],
+      "@api/*": [
+        "api/*"
+      ],
+      "@type/*": [
+        "types/*"
       ]
     },
     "lib": [
@@ -39,7 +45,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,

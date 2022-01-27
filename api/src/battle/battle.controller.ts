@@ -29,4 +29,14 @@ export class BattleController {
   async getBattles() {
     return this.battleService.getBattles();
   }
+
+  @Get('/start/:id')
+  async startBattle(@Param('id', ParseIntPipe) id: number) {
+    return this.battleService.startBattle(id);
+  }
+
+  @Get('/restart/:id')
+  async restartBattle(@Param('id', ParseIntPipe) id: number) {
+    return this.battleService.restartBattle(id);
+  }
 }

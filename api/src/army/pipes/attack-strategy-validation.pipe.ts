@@ -4,6 +4,7 @@ import {
   PipeTransform,
 } from '@nestjs/common';
 import { AttackStrategy } from '../army-attack-strategy.enum';
+import { CreateArmyDto } from '../dto/create-army.dto';
 
 export class AttackStrategyValidationPipe implements PipeTransform {
   readonly allowedStrategies = [
@@ -11,10 +12,12 @@ export class AttackStrategyValidationPipe implements PipeTransform {
     AttackStrategy.WEAKEST,
     AttackStrategy.RANDOM,
   ];
-  transform(value: any, metadata: ArgumentMetadata): any {
-    value = value.toUpperCase();
-    if (!this.isStatusValid(value))
-      throw new BadRequestException(`${value} is an invalid attack strategy`);
+  transform(value: CreateArmyDto, metadata: ArgumentMetadata): any {
+    const attackStrategy = value.attackStrategy.toUpperCase();
+    if (!this.isStatusValid(attackStrategy))
+      throw new BadRequestException(
+        `${attackStrategy} is an invalid attack strategy`,
+      );
 
     return value;
   }

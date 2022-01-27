@@ -3,20 +3,26 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Army } from '../army/army.entity';
 import { IsNotEmpty } from 'class-validator';
-import { Log } from '../log/log.entity';
-import { BattleStatus } from './battle-status.enum';
+import { Battle } from '../battle/battle.entity';
 
 @Entity()
-export class Battle extends BaseEntity {
-  constructor(title: string) {
+export class Log extends BaseEntity {
+  constructor(
+    attacker: string,
+    target: string,
+    damage: number,
+    battle: Battle,
+  ) {
     super();
-    this.title = title;
+    this.attacker = attacker;
+    this.target = target;
+    this.damage = damage;
+    this.battle = battle;
   }
 
   @PrimaryGeneratedColumn()
@@ -24,7 +30,15 @@ export class Battle extends BaseEntity {
 
   @Column()
   @IsNotEmpty()
-  title: string;
+  attacker: string;
+
+  @Column()
+  @IsNotEmpty()
+  target: string;
+
+  @Column()
+  @IsNotEmpty()
+  damage: number;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -39,12 +53,6 @@ export class Battle extends BaseEntity {
   })
   updatedAt: Date;
 
-  @Column('varchar', { default: BattleStatus.IDLE })
-  status: BattleStatus;
-
-  @OneToMany(() => Army, (army) => army.battle, { eager: true })
-  armies: Army[];
-
-  @OneToMany(() => Log, (log) => log.battle)
-  logs: Log[];
+  @ManyToOne(() => Battle, (battle) => battle.logs)
+  battle: Battle;
 }

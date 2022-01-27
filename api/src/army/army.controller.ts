@@ -9,7 +9,7 @@ import { AttackStrategyValidationPipe } from './pipes/attack-strategy-validation
 import { CreateArmyDto } from './dto/create-army.dto';
 import { ArmyService } from './army.service';
 
-@Controller('army')
+@Controller('armies')
 export class ArmyController {
   constructor(private readonly armyService: ArmyService) {}
 

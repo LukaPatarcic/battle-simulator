@@ -12,3 +12,9 @@ export const createBattle = (battle: any): Promise<Battle> =>
         body: JSON.stringify(battle),
         method: 'POST'
     });
+
+export const startBattle = (id: number): Promise<Battle> =>
+    fetchJson(`/battles/start/${id}`)
+
+export const restartBattle = (id: number): Promise<any> =>
+    fetchJson(`/battles/restart/${id}`)
