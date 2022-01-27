@@ -1,0 +1,186 @@
+{
+	"info": {
+		"_postman_id": "3ca4c5db-79ba-4fd0-adea-6492e0d61e2a",
+		"name": "BattleSimulator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "log",
+			"item": [
+				{
+					"name": "getLogs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "battle",
+			"item": [
+				{
+					"name": "startGame",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/battles/start/1",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"battles",
+								"start",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createBattle",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Battle 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/battles",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"battles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBattles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/battles",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"battles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBattleById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/battles/1",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"battles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "restartGame",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/battles/restart/1",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"battles",
+								"restart",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "army",
+			"item": [
+				{
+					"name": "createArmy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Army 2\",\r\n    \"units\": 80,\r\n    \"attackStrategy\": \"STRONGEST\",\r\n    \"battleId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/armies",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"armies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api",
+			"value": "http://localhost:5000"
+		}
+	]
+}
