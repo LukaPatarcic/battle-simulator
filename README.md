@@ -53,6 +53,10 @@ Install dependencies from package.json
 ```
 yarn install or npm install
 ```
+Edit your .env file with correct values
+```
+NEXT_PUBLIC_API_URL=
+```
 
 Startup dev server
 
