@@ -1,7 +1,4 @@
-import { FC, useState } from 'react';
-import useForm from '@hook/useForm';
-import { createBattle } from 'api/battles';
-import { Input } from 'postcss';
+import { FC } from 'react';
 import {
   Alert,
   Button,
@@ -14,51 +11,21 @@ import {
 } from 'react-bootstrap';
 import { Message } from '@type/index';
 
-const BattlePage: FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<Message>({
-    message: '',
-    type: 'success',
-  });
-  const { getFieldProps, getFormProps, isFormValid, errors } = useForm({
-    fields: {
-      title: {
-        isRequired: 'Please enter a title',
-        isMaxLength: {
-          message: 'Max length is 100 characters',
-          length: 100,
-        },
-      },
-    },
-    onSubmit: async (context: {
-      values: { title: string };
-      isFormValid: boolean;
-    }) => {
-      if (context.isFormValid) {
-        const { title } = context?.values || {};
+interface Props {
+  loading: boolean;
+  message: Message;
+  getFieldProps: (title: string) => any;
+  getFormProps: () => void;
+  errors: any;
+}
 
-        setLoading(true);
-        createBattle({ title })
-          .then(() => {
-            setMessage({
-              message: 'Successfully created a battle',
-              type: 'success',
-            });
-          })
-          .catch(() => {
-            setMessage({
-              message: 'Something went wrong while creating your battle',
-              type: 'danger',
-            });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    },
-    showErrors: 'blur',
-  });
-
+const BattlePage: FC<Props> = ({
+  loading,
+  message,
+  getFieldProps,
+  getFormProps,
+  errors,
+}) => {
   return (
     <Container className="mt-5">
       <Row>

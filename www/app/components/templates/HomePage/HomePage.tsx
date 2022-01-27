@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { Button, Col, Container, Row, Table } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { BATTLES_ROUTE, CREATE_BATTLE_ROUTE } from '@constant/routes';
-
+import Link from 'next/link';
 const HomePage: FC = () => {
   return (
     <Container>
@@ -9,17 +9,12 @@ const HomePage: FC = () => {
         <h1 className="display-4">Welcome to Battle Simulator</h1>
         <p className="lead">Let's get started by creating a new battle</p>
         <hr className="my-4" />
-        <Button
-          size="lg"
-          className="me-3"
-          variant="dark"
-          href={CREATE_BATTLE_ROUTE}
-        >
-          Create Battle
-        </Button>
-        <Button size="lg" variant="outline-dark" href={BATTLES_ROUTE}>
-          View Battles
-        </Button>
+        <Link href={CREATE_BATTLE_ROUTE}>
+          <a className="btn bnt-dark btn-lg me-3">Create Battle</a>
+        </Link>
+        <Link href={BATTLES_ROUTE}>
+          <a className="btn btn-outline-dark btn-lg">View Battles</a>
+        </Link>
       </div>
     </Container>
   );

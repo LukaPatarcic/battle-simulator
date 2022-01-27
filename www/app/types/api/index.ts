@@ -11,6 +11,7 @@ export interface Army {
   id: number;
   name: string;
   units: number;
+  initialUnits: number;
   attackStrategy: AttackStrategy;
   battle: Battle;
 }
@@ -23,6 +24,10 @@ export interface Log {
   createdAt: Date;
   updatedAt: Date;
   battle: Battle;
+}
+
+export interface ErrorMessage {
+  message: string;
 }
 
 export enum AttackStrategy {

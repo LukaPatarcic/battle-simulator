@@ -12,10 +12,6 @@ export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
     database: configService.get<string>('DATABASE_NAME'),
     entities: [__dirname + '/../**/*.entity.*'],
     synchronize: true,
-    // migrations: [__dirname + '/src/migrations/**/*.ts'],
-    // cli: {
-    //   migrationsDir: __dirname + '/src/migrations',
-    // },
   }),
   inject: [ConfigService],
 };

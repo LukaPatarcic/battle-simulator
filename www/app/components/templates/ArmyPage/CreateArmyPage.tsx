@@ -1,7 +1,4 @@
-import { FC, useState } from 'react';
-import useForm from '@hook/useForm';
-import { createBattle } from 'api/battles';
-import { Input } from 'postcss';
+import { FC } from 'react';
 import {
   Alert,
   Button,
@@ -14,86 +11,25 @@ import {
 } from 'react-bootstrap';
 import { Message } from '@type/index';
 import { Battle } from '@type/api';
-import { createArmy } from '@api/armies';
 import { armyAttackStrategy } from '@module/Army/army-attack-strategy';
 
 interface Props {
   battles: Battle[];
+  loading: boolean;
+  message: Message;
+  getFieldProps: (title: string) => any;
+  getFormProps: () => void;
+  errors: any;
 }
 
-const CreateArmyPage: FC<Props> = ({ battles }) => {
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<Message>({
-    message: '',
-    type: 'success',
-  });
-  const { getFieldProps, getFormProps, isFormValid, errors } = useForm({
-    fields: {
-      name: {
-        isRequired: 'Please enter a title',
-        isMaxLength: {
-          message: 'Max length is 100 characters',
-          length: 100,
-        },
-      },
-      units: {
-        isRequired: 'Please enter number of units',
-        isNumber: 'Please enter a number',
-        isGreaterThan: {
-          message: 'Please enter a value greater than or equal to 80',
-          value: 79,
-        },
-        isLessThan: {
-          message: 'Please enter a value less than or equal to 100',
-          value: 101,
-        },
-      },
-      attackStrategy: {
-        isRequired: 'Please select an attack strategy',
-      },
-      battleId: {
-        isRequired: 'Please select a battle',
-      },
-    },
-    onSubmit: async (context: {
-      values: {
-        name: string;
-        units: string;
-        attackStrategy: string;
-        battleId: string;
-      };
-      isFormValid: boolean;
-    }) => {
-      if (context.isFormValid) {
-        const { name, units, attackStrategy, battleId } = context?.values || {};
-
-        setLoading(true);
-        createArmy({
-          name,
-          units: parseInt(units),
-          attackStrategy,
-          battleId: parseInt(battleId),
-        })
-          .then(() => {
-            setMessage({
-              message: 'Successfully created a battle',
-              type: 'success',
-            });
-          })
-          .catch(() => {
-            setMessage({
-              message: 'Something went wrong while creating your battle',
-              type: 'danger',
-            });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    },
-    showErrors: 'blur',
-  });
-
+const CreateArmyPage: FC<Props> = ({
+  battles,
+  loading,
+  message,
+  getFieldProps,
+  getFormProps,
+  errors,
+}) => {
   return (
     <Container className="mt-5">
       <Row>
@@ -107,13 +43,11 @@ const CreateArmyPage: FC<Props> = ({ battles }) => {
                   <Form.Control
                     {...getFieldProps('name')}
                     type="text"
-                    isInvalid={errors.title}
+                    isInvalid={errors.name}
                     placeholder="Army name (ex Lorem ipsum)"
                   />
-                  {errors.title && (
-                    <Form.Text className="text-danger">
-                      {errors.title}
-                    </Form.Text>
+                  {errors.name && (
+                    <Form.Text className="text-danger">{errors.name}</Form.Text>
                   )}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -133,7 +67,7 @@ const CreateArmyPage: FC<Props> = ({ battles }) => {
                 <Form.Group>
                   <Form.Label>Battle Select</Form.Label>
                   <Form.Select
-                    isInvalid={errors.battle}
+                    isInvalid={errors.battleId}
                     {...getFieldProps('battleId')}
                   >
                     <option>Select a battle</option>

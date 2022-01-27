@@ -36,7 +36,12 @@ DATABASE_NAME=
 Setup Database
 
 ```
+Create database in MySQL - when running application it will sync the schema
+```
 
+Seed random data
+```
+npx nestjs-command generate:data
 ```
 
 Finally run dev server
@@ -51,7 +56,7 @@ A step by step series of examples that tell you how to get a development env run
 Install dependencies from package.json
 
 ```
-yarn install or npm install
+npm install
 ```
 Edit your .env file with correct values
 ```

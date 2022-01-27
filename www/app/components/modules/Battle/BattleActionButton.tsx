@@ -3,20 +3,11 @@ import React, { FC, MouseEvent } from 'react';
 import { Battle, BattleStatus } from '@type/api';
 import { useRouter } from 'next/router';
 import { GAME_ROUTE } from '@constant/routes';
+import { restartBattle } from '@api/battles';
 
 interface Props {
   battle: Battle;
 }
-
-const getVariantByStatus = (status: BattleStatus) => {
-  switch (status) {
-    case BattleStatus.DONE:
-      return 'success';
-    case BattleStatus.IDLE:
-    case BattleStatus.IN_PROGRESS:
-      return 'dark';
-  }
-};
 
 const BattleActionButton: FC<Props> = ({ battle }) => {
   const router = useRouter();
@@ -24,17 +15,40 @@ const BattleActionButton: FC<Props> = ({ battle }) => {
     e.stopPropagation();
     router.push(GAME_ROUTE(id));
   };
+
+  const onRestartButtonClick = (
+    id: number,
+    e: MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.stopPropagation();
+    restartBattle(id).then(() => {
+      router.push(GAME_ROUTE(id));
+    });
+  };
+
+  if (
+    battle.status === BattleStatus.IDLE ||
+    battle.status === BattleStatus.IN_PROGRESS
+  ) {
+    return (
+      <Button
+        size="sm"
+        variant="dark"
+        disabled={battle.status === BattleStatus.IN_PROGRESS}
+        onClick={(e) => onStartButtonClick(battle.id, e)}
+      >
+        Start Game
+      </Button>
+    );
+  }
+
   return (
     <Button
       size="sm"
-      variant={getVariantByStatus(battle.status)}
-      disabled={battle.status === BattleStatus.IN_PROGRESS}
-      onClick={(e) => onStartButtonClick(battle.id, e)}
+      variant="success"
+      onClick={(e) => onRestartButtonClick(battle.id, e)}
     >
-      {(battle.status === BattleStatus.IDLE ||
-        battle.status === BattleStatus.IN_PROGRESS) &&
-        'Start Game'}
-      {battle.status === BattleStatus.DONE && 'Restart Game'}
+      Restart Game
     </Button>
   );
 };
