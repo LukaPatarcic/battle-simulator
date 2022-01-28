@@ -25,11 +25,11 @@ export class AppGateway
     this.socketService.socket = server;
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect() {
     console.log('disconnected');
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
   }
 }

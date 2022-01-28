@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LogRepository } from './log.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LogRepository])],
-  controllers: [LogController],
-  providers: [LogService],
+	imports: [TypeOrmModule.forFeature([LogRepository])],
+	controllers: [LogController],
+	providers: [LogService],
 })
 export class LogsModule {}

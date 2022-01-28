@@ -8,17 +8,15 @@ interface Props {
   battles: Battle[];
 }
 
-const Battles: NextPage<Props> = ({ battles }) => {
-  return (
-    <Default>
-      <BattlesPage rows={battles} />
-    </Default>
-  );
-};
+const Battles: NextPage<Props> = ({ battles }) => (
+	<Default>
+		<BattlesPage rows={battles} />
+	</Default>
+);
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const battles = await getBattles();
-  return { props: { battles } };
+	const battles = await getBattles();
+	return { props: { battles } };
 };
 
 export default Battles;

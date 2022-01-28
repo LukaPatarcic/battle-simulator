@@ -4,8 +4,8 @@ import { ArmyService } from './army.service';
 import { BattleModule } from '../battle/battle.module';
 
 @Module({
-  controllers: [ArmyController],
-  providers: [ArmyService],
-  imports: [BattleModule],
+	controllers: [ArmyController],
+	providers: [ArmyService],
+	imports: [BattleModule],
 })
 export class ArmyModule {}

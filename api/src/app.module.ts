@@ -10,15 +10,15 @@ import { SocketModule } from './socket/socket.module';
 import { CommandModule } from 'nestjs-command';
 
 @Module({
-  imports: [
-    BattleModule,
-    ArmyModule,
-    CommandModule,
-    TypeOrmModule.forRootAsync(typeOrmConfig),
-    ConfigModule.forRoot(),
-    LogsModule,
-    SocketModule,
-  ],
-  providers: [AppGateway],
+	imports: [
+		BattleModule,
+		ArmyModule,
+		CommandModule,
+		TypeOrmModule.forRootAsync(typeOrmConfig),
+		ConfigModule.forRoot(),
+		LogsModule,
+		SocketModule,
+	],
+	providers: [AppGateway],
 })
 export class AppModule {}

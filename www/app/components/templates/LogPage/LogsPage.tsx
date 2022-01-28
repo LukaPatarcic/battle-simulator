@@ -9,16 +9,19 @@ interface Props {
 }
 
 const LogsPage: FC<Props> = ({ logs, battle }) => (
-  <Container className="mt-3">
-    <Row>
-      <Col xs={12}>
-        <h1>Game Logs for {battle.title}</h1>
-      </Col>
-      <Col xs={12}>
-        <GameTable logs={logs} />
-      </Col>
-    </Row>
-  </Container>
+	<Container className="mt-3">
+		<Row>
+			<Col xs={12}>
+				<h1>
+					Game Logs for
+					{battle.title}
+				</h1>
+			</Col>
+			<Col xs={12}>
+				<GameTable logs={logs} />
+			</Col>
+		</Row>
+	</Container>
 );
 
 export default LogsPage;

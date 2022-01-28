@@ -9,12 +9,12 @@ import { BattleCommand } from './battle.command';
 import { LogRepository } from '../log/log.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([BattleRepository, ArmyRepository, LogRepository]),
-    SocketModule,
-  ],
-  controllers: [BattleController],
-  providers: [BattleService, BattleCommand],
-  exports: [BattleService],
+	imports: [
+		TypeOrmModule.forFeature([BattleRepository, ArmyRepository, LogRepository]),
+		SocketModule,
+	],
+	controllers: [BattleController],
+	providers: [BattleService, BattleCommand],
+	exports: [BattleService],
 })
 export class BattleModule {}

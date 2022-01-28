@@ -10,19 +10,17 @@ interface Props {
   battle: Battle;
 }
 
-const Home: NextPage<Props> = ({ logs, battle }) => {
-  return (
-    <Default>
-      <LogsPage logs={logs} battle={battle} />
-    </Default>
-  );
-};
+const Home: NextPage<Props> = ({ logs, battle }) => (
+	<Default>
+		<LogsPage logs={logs} battle={battle} />
+	</Default>
+);
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const id = Number(ctx.query.id);
-  const logs = await getLogs(id);
-  const battle = await getBattleById(id);
-  return { props: { logs, battle } };
+	const id = Number(ctx.query.id);
+	const logs = await getLogs(id);
+	const battle = await getBattleById(id);
+	return { props: { logs, battle } };
 };
 
 export default Home;
