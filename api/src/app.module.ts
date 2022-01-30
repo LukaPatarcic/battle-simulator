@@ -8,17 +8,19 @@ import { LogsModule } from './log/logs.module';
 import { AppGateway } from './app.gateway';
 import { SocketModule } from './socket/socket.module';
 import { CommandModule } from 'nestjs-command';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-	imports: [
-		BattleModule,
-		ArmyModule,
-		CommandModule,
-		TypeOrmModule.forRootAsync(typeOrmConfig),
-		ConfigModule.forRoot(),
-		LogsModule,
-		SocketModule,
-	],
-	providers: [AppGateway],
+  imports: [
+    BattleModule,
+    ArmyModule,
+    CommandModule,
+    TypeOrmModule.forRootAsync(typeOrmConfig),
+    ConfigModule.forRoot(),
+    LogsModule,
+    SocketModule,
+    AuthModule,
+  ],
+  providers: [AppGateway],
 })
 export class AppModule {}

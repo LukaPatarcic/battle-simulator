@@ -66,6 +66,9 @@ export class Army extends BaseEntity {
   })
   updatedAt: Date;
 
+  @Column()
+  battleId: number;
+
   @ManyToOne(() => Battle, (battle) => battle.id)
   battle: Battle;
 }

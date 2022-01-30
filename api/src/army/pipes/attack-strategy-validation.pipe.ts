@@ -9,6 +9,7 @@ export class AttackStrategyValidationPipe implements PipeTransform {
     AttackStrategy.RANDOM,
   ];
   transform(value: CreateArmyDto): CreateArmyDto {
+    if (!value.attackStrategy) return value;
     const attackStrategy = value.attackStrategy.toUpperCase() as AttackStrategy;
     if (!this.isStatusValid(attackStrategy))
       throw new BadRequestException(
