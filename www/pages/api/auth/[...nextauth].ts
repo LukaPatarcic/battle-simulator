@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProviders from 'next-auth/providers/credentials';
+import { signIn } from '@api/auth';
 
 const options: NextAuthOptions = {
 	pages: {
@@ -10,15 +11,15 @@ const options: NextAuthOptions = {
 		secret: 'test',
 	},
 	callbacks: {
-		session: ({ session, token }) => {
-			if (token) {
-				session.id = token;
-			}
+		session: ({ session, token, user }) => {
+			session.accessToken = token.accessToken;
+			session.user = token.username;
+			session.id = token.id;
 			return session;
 		},
-		jwt: async ({ token, user }) => {
+		jwt: async ({ token, user, account, isNewUser }) => {
 			if (user) {
-				token.id = user.id;
+				token = { ...user };
 			}
 			return token;
 		},
@@ -32,18 +33,11 @@ const options: NextAuthOptions = {
 				password: { label: 'Password', type: 'password' },
 			},
 			authorize: async (credentials) => {
-				// Add logic here to look up the user from the credentials supplied eg from db or api
-				const user = { id: 1, name: 'J Smith', email: 'jsmith@example.com' };
-
-				if (user) {
-					// Any object returned will be saved in `user` property of the JWT
+				try {
+					const user = await signIn(credentials);
 					return Promise.resolve(user);
-				} else {
-					// If you return null or false then the credentials will be rejected
+				} catch (err) {
 					return Promise.resolve(null);
-					// You can also Reject this callback with an Error or with a URL:
-					// return Promise.reject(new Error('error message')) // Redirect to error page
-					// return Promise.reject('/path/to/redirect')        // Redirect to a URL
 				}
 			},
 		}),
