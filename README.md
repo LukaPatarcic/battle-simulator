@@ -84,6 +84,18 @@ npm run build
 npm run start
 ```
 
+### Docker
+Run docker compose with command:
+```
+docker-compose --env-file ./api/.env up  
+```
+
+Ensure all .env files are set
+
+If using in localhost change NEXT_PUBLIC_API_URL to a local ip instead of localhost
+
+Change db host DATABASE_HOST to name of container (mysql)
+
 ## Built With
 
 * [Nest.js](https://nestjs.com/) - API Backend
