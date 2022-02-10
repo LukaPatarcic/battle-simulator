@@ -1,1 +1,1 @@
-export const APP_NAME="Battle Simulator";
+export const APP_NAME = 'Battle Simulator';

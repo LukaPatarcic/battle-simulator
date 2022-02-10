@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { LogRepository } from './log.repository';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class LogService {
@@ -9,7 +10,7 @@ export class LogService {
     private readonly logRepository: LogRepository,
   ) {}
 
-  async getLogs(battleId: number) {
-    return this.logRepository.findLogsByBattleId(battleId);
+  async getLogs(battleId: number, user: User) {
+    return this.logRepository.findLogsByBattleId(battleId, user);
   }
 }

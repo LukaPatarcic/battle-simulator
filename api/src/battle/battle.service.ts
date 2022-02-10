@@ -14,6 +14,7 @@ import { Log } from '../log/log.entity';
 import { BattleStatus } from './battle-status.enum';
 import { SocketService } from '../socket/socket.service';
 import { LogRepository } from '../log/log.repository';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class BattleService implements OnApplicationBootstrap {
@@ -28,22 +29,25 @@ export class BattleService implements OnApplicationBootstrap {
     private readonly armyRepository: ArmyRepository,
     private readonly socketService: SocketService,
   ) {}
-  async createBattle(createBattleDto: CreateBattleDto): Promise<Battle> {
+  async createBattle(
+    createBattleDto: CreateBattleDto,
+    user: User,
+  ): Promise<Battle> {
     const { title } = createBattleDto;
-    const battle = new Battle(title);
+    const battle = new Battle(title, user);
     await battle.save();
 
     return battle;
   }
 
-  async getBattleById(id: number): Promise<Battle> {
-    const battle = await this.battleRepository.findOne(id);
+  async getBattleById(id: number, user: User): Promise<Battle> {
+    const battle = await this.battleRepository.findOne({ where: { id, user } });
     if (!battle) throw new NotFoundException('Battle could not be found');
     return battle;
   }
 
-  async getBattles(): Promise<Battle[]> {
-    return this.battleRepository.find();
+  async getBattles(user: User): Promise<Battle[]> {
+    return this.battleRepository.find({ user });
   }
 
   async onApplicationBootstrap() {
@@ -51,10 +55,11 @@ export class BattleService implements OnApplicationBootstrap {
     battle.forEach((battle) => this.playGame(battle));
   }
 
-  async startBattle(id: number) {
-    const battle = await this.battleRepository.findBattleWithArmies(id);
-    const battlesInProgress =
-      await this.battleRepository.findBattlesInProgress();
+  async startBattle(id: number, user: User) {
+    const battle = await this.battleRepository.findBattleWithArmies(id, user);
+    const battlesInProgress = await this.battleRepository.find({
+      where: { status: BattleStatus.IN_PROGRESS },
+    });
     if (!battle) {
       throw new NotFoundException();
     }
@@ -79,6 +84,7 @@ export class BattleService implements OnApplicationBootstrap {
         'Game is complete. Please restart the game.',
       );
     }
+
     battle.status = BattleStatus.IN_PROGRESS;
     await battle.save();
     this.playGame(battle);
@@ -86,8 +92,8 @@ export class BattleService implements OnApplicationBootstrap {
     return { ok: 1 };
   }
 
-  async restartBattle(id: number) {
-    const battle = await this.getBattleById(id);
+  async restartBattle(id: number, user: User) {
+    const battle = await this.getBattleById(id, user);
     const armies = [];
     battle.armies.forEach((army) => {
       army.units = army.initialUnits;

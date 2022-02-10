@@ -8,8 +8,11 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { SocketService } from './socket/socket.service';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from './auth/websocket.guard';
 
 @WebSocketGateway({ cors: true })
+@UseGuards(WsJwtGuard)
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -25,11 +28,11 @@ export class AppGateway
     this.socketService.socket = server;
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect() {
     console.log('disconnected');
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
   }
 }
