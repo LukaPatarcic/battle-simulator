@@ -8,6 +8,7 @@ import {
 	HOME_ROUTE,
 } from '@constant/routes';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 const pages = [
 	{ name: 'Battles', route: BATTLES_ROUTE },
@@ -28,20 +29,23 @@ function Header() {
 				</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav">
-					<Nav className="me-auto">
-						{pages.map((page) => (
-							<Nav.Item key={page.name} className="mx-2">
-								<Link href={page.route}>
-									<a
-										href={page.route}
-										className="text-white text-decoration-none"
-									>
-										{page.name}
-									</a>
-								</Link>
-							</Nav.Item>
-						))}
-					</Nav>
+					{pages.map((page) => (
+						<Nav.Item key={page.name} className="mx-2">
+							<Link href={page.route}>
+								<a
+									href={page.route}
+									className="text-white text-decoration-none"
+								>
+									{page.name}
+								</a>
+							</Link>
+						</Nav.Item>
+					))}
+					<Nav.Item key="signout" className="mx-2 ms-auto text-white">
+						<div className="cursor-pointer" onClick={() => signOut()}>
+							Sign out
+						</div>
+					</Nav.Item>
 				</Navbar.Collapse>
 			</Container>
 		</Navbar>

@@ -4,10 +4,14 @@ import { GetServerSideProps } from 'next';
 import { getBattles } from '@api/battles';
 import { Battle } from '@type/api';
 import CreateArmyPage from '@template/ArmyPage/CreateArmyPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Message } from '@type/index';
 import useForm from '@hook/useForm';
 import { createArmy } from '@api/armies';
+import { LOGIN_ROUTE } from '@constant/routes';
+import { getSession, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { getAuthToken } from '@api/auth';
 
 interface Props {
 	battles: Battle[];
@@ -18,6 +22,9 @@ const CreateArmies: NextPage<Props> = ({ battles }) => {
 		message: '',
 		type: 'success',
 	});
+	const router = useRouter();
+	const session = useSession();
+	console.log(session);
 	const { getFieldProps, getFormProps, errors } = useForm({
 		fields: {
 			name: {
@@ -59,12 +66,15 @@ const CreateArmies: NextPage<Props> = ({ battles }) => {
 				const { name, units, attackStrategy, battleId } = context?.values || {};
 
 				setLoading(true);
-				createArmy({
-					name,
-					units: parseInt(units, 10),
-					attackStrategy,
-					battleId: parseInt(battleId, 10),
-				})
+				createArmy(
+					{
+						name,
+						units: parseInt(units, 10),
+						attackStrategy,
+						battleId: parseInt(battleId, 10),
+					},
+					session.data.accessToken as string,
+				)
 					.then(() => {
 						setMessage({
 							message: 'Successfully created an army',
@@ -84,6 +94,17 @@ const CreateArmies: NextPage<Props> = ({ battles }) => {
 		},
 		showErrors: 'blur',
 	});
+
+	useEffect(() => {
+		if (session.status != 'authenticated') {
+			router.push(LOGIN_ROUTE);
+		}
+	}, []);
+
+	if (session.status != 'authenticated') {
+		return null;
+	}
+
 	return (
 		<Default>
 			<CreateArmyPage
@@ -98,9 +119,13 @@ const CreateArmies: NextPage<Props> = ({ battles }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-	const battles = await getBattles();
-	return { props: { battles } };
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+	const accessToken = await getAuthToken(ctx);
+	const [battles, session] = await Promise.all([
+		getBattles(accessToken),
+		getSession(ctx),
+	]);
+	return { props: { battles, session } };
 };
 
 export default CreateArmies;

@@ -4,13 +4,15 @@ import { Battle, BattleStatus } from '@type/api';
 import { useRouter } from 'next/router';
 import { GAME_ROUTE } from '@constant/routes';
 import { restartBattle } from '@api/battles';
+import { useSession } from 'next-auth/react';
 
 interface Props {
-  battle: Battle;
+	battle: Battle;
 }
 
 const BattleActionButton: FC<Props> = ({ battle }) => {
 	const router = useRouter();
+	const session = useSession();
 	const onStartButtonClick = (id: number, e: MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 		router.push(GAME_ROUTE(id));
@@ -21,21 +23,21 @@ const BattleActionButton: FC<Props> = ({ battle }) => {
 		e: MouseEvent<HTMLButtonElement>,
 	) => {
 		e.stopPropagation();
-		restartBattle(id).then(() => {
+		restartBattle(id, session.data.accessToken as string).then(() => {
 			router.push(GAME_ROUTE(id));
 		});
 	};
 
 	if (
 		battle.status === BattleStatus.IDLE ||
-    battle.status === BattleStatus.IN_PROGRESS
+		battle.status === BattleStatus.IN_PROGRESS
 	) {
 		return (
 			<Button
 				size="sm"
 				variant="dark"
 				disabled={battle.status === BattleStatus.IN_PROGRESS}
-				onClick={e => onStartButtonClick(battle.id, e)}
+				onClick={(e) => onStartButtonClick(battle.id, e)}
 			>
 				Start Game
 			</Button>
@@ -46,7 +48,7 @@ const BattleActionButton: FC<Props> = ({ battle }) => {
 		<Button
 			size="sm"
 			variant="success"
-			onClick={e => onRestartButtonClick(battle.id, e)}
+			onClick={(e) => onRestartButtonClick(battle.id, e)}
 		>
 			Restart Game
 		</Button>

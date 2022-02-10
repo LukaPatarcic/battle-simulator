@@ -8,8 +8,11 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { SocketService } from './socket/socket.service';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from './auth/websocket.guard';
 
 @WebSocketGateway({ cors: true })
+@UseGuards(WsJwtGuard)
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {

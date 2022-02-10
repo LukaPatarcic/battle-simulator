@@ -1,4 +1,5 @@
 import { getCsrfToken } from 'next-auth/react';
+import { GetServerSideProps } from 'next';
 
 export default function SignIn({ csrfToken }) {
 	return (
@@ -17,20 +18,10 @@ export default function SignIn({ csrfToken }) {
 	);
 }
 
-// This is the recommended way for Next.js 9.3 or newer
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
 	return {
 		props: {
 			csrfToken: await getCsrfToken(context),
 		},
 	};
-}
-
-/*
-// If older than Next.js 9.3
-SignIn.getInitialProps = async (context) => {
-  return {
-    csrfToken: await getCsrfToken(context)
-  }
-}
-*/
+};

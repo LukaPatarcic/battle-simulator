@@ -9,6 +9,7 @@ import { AppGateway } from './app.gateway';
 import { SocketModule } from './socket/socket.module';
 import { CommandModule } from 'nestjs-command';
 import { AuthModule } from './auth/auth.module';
+import { UserRepository } from './auth/user.repository';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot(),
     LogsModule,
     SocketModule,
+    TypeOrmModule.forFeature([UserRepository]),
     AuthModule,
   ],
   providers: [AppGateway],

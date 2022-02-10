@@ -6,9 +6,9 @@ const options: NextAuthOptions = {
 	pages: {
 		signIn: '/login',
 	},
-	secret: 'test',
+	secret: process.env.SECRET,
 	jwt: {
-		secret: 'test',
+		secret: process.env.SECRET,
 	},
 	callbacks: {
 		session: ({ session, token, user }) => {
