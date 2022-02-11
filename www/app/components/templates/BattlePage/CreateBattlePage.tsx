@@ -10,13 +10,15 @@ import {
 	Spinner,
 } from 'react-bootstrap';
 import { Message } from '@type/index';
+import ErrorMessage from '@element/ErrorMessage/ErrorMessage';
+import LoadingButton from '@element/LoadingButton/LoadingButton';
 
 interface Props {
-  loading: boolean;
-  message: Message;
-  getFieldProps: (title: string) => any;
-  getFormProps: () => void;
-  errors: any;
+	loading: boolean;
+	message: Message;
+	getFieldProps: (title: string) => any;
+	getFormProps: () => void;
+	errors: { [key: string]: string };
 }
 
 const BattlePage: FC<Props> = ({
@@ -38,25 +40,15 @@ const BattlePage: FC<Props> = ({
 								<Form.Control
 									{...getFieldProps('title')}
 									type="text"
-									isInvalid={errors.title}
+									isInvalid={!!errors.title}
 									placeholder="Battle title (ex Lorem ipsum)"
 								/>
-								{errors.title && (
-									<Form.Text className="text-danger">
-										{errors.title}
-									</Form.Text>
-								)}
+								<ErrorMessage error={errors.title} />
 							</Form.Group>
 							{message.message && (
 								<Alert variant={message.type}>{message.message}</Alert>
 							)}
-							<Button variant="dark" type="submit">
-								{loading ? (
-									<Spinner size="sm" animation="border" />
-								) : (
-									'Submit'
-								)}
-							</Button>
+							<LoadingButton loading={loading} />
 						</Form>
 					</Card.Body>
 				</Card>

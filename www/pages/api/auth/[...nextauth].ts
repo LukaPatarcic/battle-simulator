@@ -6,10 +6,10 @@ const options: NextAuthOptions = {
 	pages: {
 		signIn: '/login',
 	},
-	secret: process.env.SECRET,
-	jwt: {
-		secret: process.env.SECRET,
-	},
+	// secret: process.env.SECRET,
+	// jwt: {
+	// 	secret: process.env.SECRET,
+	// },
 	callbacks: {
 		session: ({ session, token, user }) => {
 			session.accessToken = token.accessToken;
@@ -26,7 +26,6 @@ const options: NextAuthOptions = {
 	},
 	providers: [
 		CredentialsProviders({
-			// The name to display on the sign in form (e.g. 'Sign in with...')
 			name: 'Email and Password',
 			credentials: {
 				username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
@@ -34,6 +33,7 @@ const options: NextAuthOptions = {
 			},
 			authorize: async (credentials) => {
 				try {
+					console.log(credentials);
 					const user = await signIn(credentials);
 					return Promise.resolve(user);
 				} catch (err) {

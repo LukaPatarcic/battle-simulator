@@ -4,55 +4,31 @@ import { GetServerSideProps } from 'next';
 import { getBattles } from '@api/battles';
 import { Battle } from '@type/api';
 import CreateArmyPage from '@template/ArmyPage/CreateArmyPage';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Message } from '@type/index';
 import useForm from '@hook/useForm';
 import { createArmy } from '@api/armies';
-import { LOGIN_ROUTE } from '@constant/routes';
-import { getSession, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { getAuthToken } from '@api/auth';
+import { armyFields } from '@validation/armies';
+import {
+	SOMETHING_WENT_WRONG_WHILE_CREATING_YOUR_ARMY,
+	SUCCESSFULLY_CREATED_AN_ARMY,
+} from '@constant/messages';
 
 interface Props {
 	battles: Battle[];
 }
 const CreateArmies: NextPage<Props> = ({ battles }) => {
+	const session = useSession();
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState<Message>({
 		message: '',
 		type: 'success',
 	});
-	const router = useRouter();
-	const session = useSession();
-	console.log(session);
+
 	const { getFieldProps, getFormProps, errors } = useForm({
-		fields: {
-			name: {
-				isRequired: 'Please enter a title',
-				isMaxLength: {
-					message: 'Max length is 100 characters',
-					length: 100,
-				},
-			},
-			units: {
-				isRequired: 'Please enter number of units',
-				isNumber: 'Please enter a number',
-				isGreaterThan: {
-					message: 'Please enter a value greater than or equal to 80',
-					value: 79,
-				},
-				isLessThan: {
-					message: 'Please enter a value less than or equal to 100',
-					value: 101,
-				},
-			},
-			attackStrategy: {
-				isRequired: 'Please select an attack strategy',
-			},
-			battleId: {
-				isRequired: 'Please select a battle',
-			},
-		},
+		fields: armyFields,
 		onSubmit: async (context: {
 			values: {
 				name: string;
@@ -77,13 +53,13 @@ const CreateArmies: NextPage<Props> = ({ battles }) => {
 				)
 					.then(() => {
 						setMessage({
-							message: 'Successfully created an army',
+							message: SUCCESSFULLY_CREATED_AN_ARMY,
 							type: 'success',
 						});
 					})
 					.catch(() => {
 						setMessage({
-							message: 'Something went wrong while creating your army',
+							message: SOMETHING_WENT_WRONG_WHILE_CREATING_YOUR_ARMY,
 							type: 'danger',
 						});
 					})
@@ -94,16 +70,6 @@ const CreateArmies: NextPage<Props> = ({ battles }) => {
 		},
 		showErrors: 'blur',
 	});
-
-	useEffect(() => {
-		if (session.status != 'authenticated') {
-			router.push(LOGIN_ROUTE);
-		}
-	}, []);
-
-	if (session.status != 'authenticated') {
-		return null;
-	}
 
 	return (
 		<Default>
@@ -121,11 +87,8 @@ const CreateArmies: NextPage<Props> = ({ battles }) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const accessToken = await getAuthToken(ctx);
-	const [battles, session] = await Promise.all([
-		getBattles(accessToken),
-		getSession(ctx),
-	]);
-	return { props: { battles, session } };
+	const battles = await getBattles(accessToken);
+	return { props: { battles } };
 };
 
 export default CreateArmies;

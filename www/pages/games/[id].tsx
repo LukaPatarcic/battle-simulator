@@ -8,35 +8,34 @@ import GameErrorPage from '@template/GamePage/GameErroPage';
 import GamePage from '@template/GamePage/GamePage';
 import { getSession, useSession } from 'next-auth/react';
 import { getAuthToken } from '@api/auth';
-import { LOGIN_ROUTE } from '@constant/routes';
-import { useRouter } from 'next/router';
 
 interface Props {
 	id: number;
 	battle: Battle;
+	serverError: ErrorMessage;
 }
 
-const StartGame: NextPage<Props> = ({ id, battle }) => {
+const StartGame: NextPage<Props> = ({ id, battle, serverError }) => {
 	const [error, setError] = useState<ErrorMessage | null>(null);
 	const [logs, setLogs] = useState<Log[]>([]);
 	const [winner, setWinner] = useState<Army | undefined>(undefined);
 	const [loading, setLoading] = useState(false);
 	const [show, setShow] = useState(false);
 	const session = useSession();
-	const router = useRouter();
 
 	const handleClose = () => setShow(false);
 
 	useEffect(() => {
-		if (session.status != 'authenticated') {
-			router.push(LOGIN_ROUTE);
-			return;
-		}
+		if (error || serverError) return;
 		setLoading(true);
-		startBattle(id, session.data.accessToken as string)
+		const accessToken = session?.data?.accessToken as string;
+		startBattle(id, accessToken)
 			.then(() => {
 				const socket = io(process.env.NEXT_PUBLIC_API_URL || '', {
 					reconnectionDelayMax: 10000,
+					query: {
+						accessToken,
+					},
 				});
 				socket.on('log', (log: Log) => {
 					if (log.battle.id === id) setLogs((logs) => [log, ...logs]);
@@ -56,11 +55,9 @@ const StartGame: NextPage<Props> = ({ id, battle }) => {
 			});
 	}, []);
 
-	if (session.status != 'authenticated') {
-		return null;
-	}
+	if (error || serverError)
+		return <GameErrorPage error={error || serverError} />;
 
-	if (error) return <GameErrorPage error={error} />;
 	return (
 		<Default>
 			<GamePage
@@ -78,12 +75,13 @@ const StartGame: NextPage<Props> = ({ id, battle }) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const accessToken = await getAuthToken(ctx);
 	const id = Number(ctx.query.id);
-	const [battle, session] = await Promise.all([
-		getBattleById(id, accessToken),
-		getSession(ctx),
-	]);
-
-	return { props: { id, battle, session } };
+	const session = await getSession(ctx);
+	try {
+		const battle = await getBattleById(id, accessToken);
+		return { props: { id, battle, session } };
+	} catch (err) {
+		return { props: { id, serverError: err, session } };
+	}
 };
 
 export default StartGame;

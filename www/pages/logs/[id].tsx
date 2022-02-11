@@ -4,10 +4,6 @@ import Default from '@layout/Default/Default';
 import { getBattleById } from '@api/battles';
 import { getLogs } from '@api/logs';
 import LogsPage from '@template/LogPage/LogsPage';
-import { getSession, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { LOGIN_ROUTE } from '@constant/routes';
 import { getAuthToken } from '@api/auth';
 
 interface Props {
@@ -16,19 +12,6 @@ interface Props {
 }
 
 const Home: NextPage<Props> = ({ logs, battle }) => {
-	const session = useSession();
-	const router = useRouter();
-
-	useEffect(() => {
-		if (session.status != 'authenticated') {
-			router.push(LOGIN_ROUTE);
-		}
-	}, []);
-
-	if (session.status != 'authenticated') {
-		return null;
-	}
-
 	return (
 		<Default>
 			<LogsPage logs={logs} battle={battle} />
@@ -39,13 +22,12 @@ const Home: NextPage<Props> = ({ logs, battle }) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const accessToken = await getAuthToken(ctx);
 	const id = Number(ctx.query.id);
-	const [logs, battle, session] = await Promise.all([
+	const [logs, battle] = await Promise.all([
 		getLogs(id, accessToken),
 		getBattleById(id, accessToken),
-		getSession(ctx),
 	]);
 
-	return { props: { logs, battle, session } };
+	return { props: { logs, battle } };
 };
 
 export default Home;

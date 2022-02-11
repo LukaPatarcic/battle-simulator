@@ -6,9 +6,11 @@ import {
 	CREATE_ARMY_ROUTE,
 	CREATE_BATTLE_ROUTE,
 	HOME_ROUTE,
+	LOGIN_ROUTE,
 } from '@constant/routes';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const pages = [
 	{ name: 'Battles', route: BATTLES_ROUTE },
@@ -17,6 +19,8 @@ const pages = [
 ];
 
 function Header() {
+	const session = useSession();
+	const router = useRouter();
 	return (
 		<Navbar bg="dark" variant="dark" expand="lg">
 			<Container>
@@ -41,9 +45,17 @@ function Header() {
 							</Link>
 						</Nav.Item>
 					))}
-					<Nav.Item key="signout" className="mx-2 ms-auto text-white">
-						<div className="cursor-pointer" onClick={() => signOut()}>
-							Sign out
+					<Nav.Item
+						key="signout"
+						className="mx-2 mx-xs-2 mx-sm-2 mx-md-2 ms-lg-auto text-white"
+					>
+						<div
+							role="button"
+							onClick={() =>
+								session.data ? signOut() : router.push(LOGIN_ROUTE)
+							}
+						>
+							{session.data ? 'Sign out' : 'Login'}
 						</div>
 					</Nav.Item>
 				</Navbar.Collapse>

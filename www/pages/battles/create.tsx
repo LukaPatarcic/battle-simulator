@@ -1,33 +1,26 @@
 import type { NextPage } from 'next';
 import Default from '@layout/Default/Default';
 import CreateBattlePage from '@template/BattlePage/CreateBattlePage';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Message } from '@type/index';
 import useForm from '@hook/useForm';
-import { createBattle, getBattleById } from '@api/battles';
-import { GetServerSideProps } from 'next';
-import { getSession, useSession } from 'next-auth/react';
-import { LOGIN_ROUTE } from '@constant/routes';
-import { useRouter } from 'next/router';
+import { createBattle } from '@api/battles';
+import { useSession } from 'next-auth/react';
+import { battleFields } from '@validation/battles';
+import {
+	SOMETHING_WENT_WRONG_WHILE_CREATING_YOUR_BATTLE,
+	SUCCESSFULLY_CREATED_A_BATTLE,
+} from '@constant/messages';
 
 const CreateBattles: NextPage = () => {
+	const session = useSession();
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState<Message>({
 		message: '',
 		type: 'success',
 	});
-	const session = useSession();
-	const router = useRouter();
 	const { getFieldProps, getFormProps, errors } = useForm({
-		fields: {
-			title: {
-				isRequired: 'Please enter a title',
-				isMaxLength: {
-					message: 'Max length is 100 characters',
-					length: 100,
-				},
-			},
-		},
+		fields: battleFields,
 		onSubmit: async (context: {
 			values: { title: string };
 			isFormValid: boolean;
@@ -39,13 +32,13 @@ const CreateBattles: NextPage = () => {
 				createBattle({ title }, session.data.accessToken as string)
 					.then(() => {
 						setMessage({
-							message: 'Successfully created a battle',
+							message: SUCCESSFULLY_CREATED_A_BATTLE,
 							type: 'success',
 						});
 					})
 					.catch(() => {
 						setMessage({
-							message: 'Something went wrong while creating your battle',
+							message: SOMETHING_WENT_WRONG_WHILE_CREATING_YOUR_BATTLE,
 							type: 'danger',
 						});
 					})
@@ -56,16 +49,6 @@ const CreateBattles: NextPage = () => {
 		},
 		showErrors: 'blur',
 	});
-
-	useEffect(() => {
-		if (session.status != 'authenticated') {
-			router.push(LOGIN_ROUTE);
-		}
-	}, []);
-
-	if (session.status != 'authenticated') {
-		return null;
-	}
 
 	return (
 		<Default>
@@ -78,11 +61,6 @@ const CreateBattles: NextPage = () => {
 			/>
 		</Default>
 	);
-};
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-	const session = await getSession(ctx);
-	return { props: { session } };
 };
 
 export default CreateBattles;

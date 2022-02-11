@@ -12,14 +12,16 @@ import {
 import { Message } from '@type/index';
 import { Battle } from '@type/api';
 import { armyAttackStrategy } from '@module/Army/army-attack-strategy';
+import ErrorMessage from '@element/ErrorMessage/ErrorMessage';
+import LoadingButton from '@element/LoadingButton/LoadingButton';
 
 interface Props {
-  battles: Battle[];
-  loading: boolean;
-  message: Message;
-  getFieldProps: (title: string) => any;
-  getFormProps: () => void;
-  errors: any;
+	battles: Battle[];
+	loading: boolean;
+	message: Message;
+	getFieldProps: (title: string) => unknown;
+	getFormProps: () => void;
+	errors: { [key: string]: string };
 }
 
 const CreateArmyPage: FC<Props> = ({
@@ -42,50 +44,40 @@ const CreateArmyPage: FC<Props> = ({
 								<Form.Control
 									{...getFieldProps('name')}
 									type="text"
-									isInvalid={errors.name}
+									isInvalid={!!errors.name}
 									placeholder="Army name (ex Lorem ipsum)"
 								/>
-								{errors.name && (
-									<Form.Text className="text-danger">{errors.name}</Form.Text>
-								)}
+								<ErrorMessage error={errors.name} />
 							</Form.Group>
 							<Form.Group className="mb-3" controlId="formBasicEmail">
 								<Form.Label>Army title</Form.Label>
 								<Form.Control
 									{...getFieldProps('units')}
 									type="number"
-									isInvalid={errors.units}
+									isInvalid={!!errors.units}
 									placeholder="Army units (min 80 max 100)"
 								/>
-								{errors.units && (
-									<Form.Text className="text-danger">
-										{errors.units}
-									</Form.Text>
-								)}
+								<ErrorMessage error={errors.units} />
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Battle Select</Form.Label>
 								<Form.Select
-									isInvalid={errors.battleId}
+									isInvalid={!!errors.battleId}
 									{...getFieldProps('battleId')}
 								>
 									<option>Select a battle</option>
-									{battles.map(battle => (
+									{battles.map((battle) => (
 										<option key={battle.id} value={battle.id}>
 											{battle.title}
 										</option>
 									))}
 								</Form.Select>
-								{errors.battleId && (
-									<Form.Text className="text-danger">
-										{errors.battleId}
-									</Form.Text>
-								)}
+								<ErrorMessage error={errors.battleId} />
 							</Form.Group>
-							<Form.Group className="mt-3">
+							<Form.Group className="my-3">
 								<Form.Label>Army Attack Strategy</Form.Label>
 								<Form.Select
-									isInvalid={errors.attackStrategy}
+									isInvalid={!!errors.attackStrategy}
 									{...getFieldProps('attackStrategy')}
 								>
 									<option>Select an Attack Strategy</option>
@@ -99,24 +91,14 @@ const CreateArmyPage: FC<Props> = ({
 										{armyAttackStrategy.STRONGEST}
 									</option>
 								</Form.Select>
-								{errors.attackStrategy && (
-									<Form.Text className="text-danger">
-										{errors.attackStrategy}
-									</Form.Text>
-								)}
+								<ErrorMessage error={errors.attackStrategy} />
 							</Form.Group>
 							{message.message && (
 								<Alert className="mt-4" variant={message.type}>
 									{message.message}
 								</Alert>
 							)}
-							<Button className="mt-4" variant="dark" type="submit">
-								{loading ? (
-									<Spinner size="sm" animation="border" />
-								) : (
-									'Submit'
-								)}
-							</Button>
+							<LoadingButton loading={loading} />
 						</Form>
 					</Card.Body>
 				</Card>

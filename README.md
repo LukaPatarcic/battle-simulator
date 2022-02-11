@@ -62,7 +62,11 @@ npm install
 Edit your .env file with correct values
 ```
 NEXT_PUBLIC_API_URL=
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
 ```
+
+Note: Make sure JWT_SECRET and NEXTAUTH_SECRET are the same value
 
 Startup dev server
 
